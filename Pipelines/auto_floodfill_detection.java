@@ -13,7 +13,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.Stack;
 
-// todo Linear regression for distance based on cluster size + linear regression for angle
+// todo Linear regression for distance based on cluster size + linear regression for x and y distance
 public class auto_floodfill_detection extends OpenCvPipeline {
   Telemetry telemetry;
   public Scalar lower = new Scalar(0, 0, 0);
