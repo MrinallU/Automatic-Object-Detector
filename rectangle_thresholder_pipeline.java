@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.WebCam;
 
-
-
 import org.opencv.core.Point;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.opencv.core.Core;
@@ -12,58 +10,57 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class rectangle_thresholder_pipeline extends OpenCvPipeline {
-    Telemetry telemetry;
-    private String out;
-    public Scalar lower = new Scalar(0, 0, 0);
-    public Scalar upper = new Scalar(255, 255, 255);
+  Telemetry telemetry;
+  private String out;
+  public Scalar lower = new Scalar(0, 0, 0);
+  public Scalar upper = new Scalar(255, 255, 255);
 
-    private Mat hsvMat       = new Mat();
-    private Mat binaryMat      = new Mat();
-    private Mat maskedInputMat = new Mat();
+  private Mat hsvMat = new Mat();
+  private Mat binaryMat = new Mat();
+  private Mat maskedInputMat = new Mat();
 
-    private Point topLeft1 = new Point(10, 0),
-            bottomRight1 = new Point(40, 20);
-    public rectangle_thresholder_pipeline(Telemetry telemetry) {
-        this.telemetry = telemetry;
-    }
+  private Point topLeft1 = new Point(10, 0), bottomRight1 = new Point(40, 20);
 
-    public rectangle_thresholder_pipeline() {
+  public rectangle_thresholder_pipeline(Telemetry telemetry) {
+    this.telemetry = telemetry;
+  }
 
-    }
+  public rectangle_thresholder_pipeline() {}
 
-    @Override
-    public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
-        Core.inRange(hsvMat, lower, upper, binaryMat);
-        maskedInputMat.release();
-        Core.bitwise_and(input, input, maskedInputMat, binaryMat);
+  @Override
+  public Mat processFrame(Mat input) {
+    Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
+    Core.inRange(hsvMat, lower, upper, binaryMat);
+    maskedInputMat.release();
+    Core.bitwise_and(input, input, maskedInputMat, binaryMat);
 
-        double w1 = 0, w2 = 0;
-        // process the pixel value for each rectangle  (255 = W, 0 = B)
-        for (int i = (int) topLeft1.x; i <= bottomRight1.x; i++) {
-            for (int j = (int) topLeft1.y; j <= bottomRight1.y ; j++) {
-                if(binaryMat.get(i, j)[0] == 255){
-                    w1++;
-                }
-            }
+    double w1 = 0, w2 = 0;
+    // process the pixel value for each rectangle  (255 = W, 0 = B)
+    for (int i = (int) topLeft1.x; i <= bottomRight1.x; i++) {
+      for (int j = (int) topLeft1.y; j <= bottomRight1.y; j++) {
+        if (binaryMat.get(i, j)[0] == 255) {
+          w1++;
         }
-
-        if(w1>w2){
-            telemetry.addLine("rect#1");
-            out = "1";
-        }else if(w1<w2){
-            telemetry.addLine("rect#2");
-            out = "2";
-        }else{
-            telemetry.addLine("BOTH");
-            out = "3";
-        }
-
-        telemetry.update();
-        return binaryMat; // now just loop around the pixel bounding pixels and search for the most amount of non-black pixels.
+      }
     }
 
-    public String getOut() {
-        return out;
+    if (w1 > w2) {
+      telemetry.addLine("rect#1");
+      out = "1";
+    } else if (w1 < w2) {
+      telemetry.addLine("rect#2");
+      out = "2";
+    } else {
+      telemetry.addLine("BOTH");
+      out = "3";
     }
+
+    telemetry.update();
+    return binaryMat; // now just loop around the pixel bounding pixels and search for the most
+                      // amount of non-black pixels.
+  }
+
+  public String getOut() {
+    return out;
+  }
 }

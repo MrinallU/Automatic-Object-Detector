@@ -11,103 +11,111 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.Stack;
 
-//todo Linear regression for distance based on cluster size + linear regression for angle
+// todo Linear regression for distance based on cluster size + linear regression for angle
 public class auto_floodfill_detection extends OpenCvPipeline {
-    Telemetry telemetry;
-    public Scalar lower = new Scalar(0, 0, 0);
-    public Scalar upper = new Scalar(255, 255, 255);
+  Telemetry telemetry;
+  public Scalar lower = new Scalar(0, 0, 0);
+  public Scalar upper = new Scalar(255, 255, 255);
 
-    private Mat hsvMat       = new Mat();
-    private Mat binaryMat      = new Mat();
-    private Mat maskedInputMat = new Mat();
+  private Mat hsvMat = new Mat();
+  private Mat binaryMat = new Mat();
+  private Mat maskedInputMat = new Mat();
 
-    private ArrayList<VisionObject> objs;
-    private static Mat grid;  // the grid itself
-    private static int rowNum;
-    private static int colNum;  // grid dimensions, rows and columns
-    private static boolean[][] visited;  // keeps track of which nodes have been visited
-    private static int currSize = 0;  // reset to 0 each time we start a new component
-    public static final int R_CHANGE[] = {0, 1, 0, -1};
-    public static final int C_CHANGE[] = {1, 0, -1, 0};
-    private static int l=-1,right=Integer.MAX_VALUE,t=Integer.MAX_VALUE,b=-1;
+  private ArrayList<VisionObject> objs;
+  private static Mat grid; // the grid itself
+  private static int rowNum;
+  private static int colNum; // grid dimensions, rows and columns
+  private static boolean[][] visited; // keeps track of which nodes have been visited
+  private static int currSize = 0; // reset to 0 each time we start a new component
+  public static final int R_CHANGE[] = {0, 1, 0, -1};
+  public static final int C_CHANGE[] = {1, 0, -1, 0};
+  private static int l = -1, right = Integer.MAX_VALUE, t = Integer.MAX_VALUE, b = -1;
 
+  public auto_floodfill_detection(Telemetry telemetry) {
+    this.telemetry = telemetry;
+  }
 
+  public auto_floodfill_detection() {}
 
-    public auto_floodfill_detection(Telemetry telemetry) {
-        this.telemetry = telemetry;
-    }
-
-    public auto_floodfill_detection() {
-
-    }
-
-    @Override
-    public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
-        Core.inRange(hsvMat, lower, upper, binaryMat);
-        maskedInputMat.release();
-        Core.bitwise_and(input, input, maskedInputMat, binaryMat);
-        grid = binaryMat;
-        objs = new ArrayList<>();
-        rowNum = (int) input.size().height;
-        colNum = (int) input.size().width;
-        visited = new boolean[rowNum][colNum];
-        double w1 = 0, w2 = 0;
-        boolean f = false;
-        // process the pixel value for each rectangle  (255 = W, 0 = B)
-        for (int i = 10; i < input.size().height; i++) {
-            for (int j = 0; j < input.size().width ; j++) {
-                if(!visited[i][j]&&binaryMat.get(i, j)[0] == 255){
-                    l=Integer.MAX_VALUE;right=-1;t=Integer.MAX_VALUE;b=-1;
-                    currSize = 0;
-                    floodfill(i, j, 255);
-                    Imgproc.rectangle(input, new Point(l, t), new Point(right,b), new Scalar(255,0,0));
-                    VisionObject obj = new VisionObject(l, right, b, t);
-                    obj.angle = (int) Math.toDegrees(Math.atan2((rowNum-obj.centerY)+rowNum, (colNum-obj.centerX)+colNum));
-                    objs.add(obj);
-                }
-            }
+  @Override
+  public Mat processFrame(Mat input) {
+    Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
+    Core.inRange(hsvMat, lower, upper, binaryMat);
+    maskedInputMat.release();
+    Core.bitwise_and(input, input, maskedInputMat, binaryMat);
+    grid = binaryMat;
+    objs = new ArrayList<>();
+    rowNum = (int) input.size().height;
+    colNum = (int) input.size().width;
+    visited = new boolean[rowNum][colNum];
+    double w1 = 0, w2 = 0;
+    boolean f = false;
+    // process the pixel value for each rectangle  (255 = W, 0 = B)
+    for (int i = 10; i < input.size().height; i++) {
+      for (int j = 0; j < input.size().width; j++) {
+        if (!visited[i][j] && binaryMat.get(i, j)[0] == 255) {
+          l = Integer.MAX_VALUE;
+          right = -1;
+          t = Integer.MAX_VALUE;
+          b = -1;
+          currSize = 0;
+          floodfill(i, j, 255);
+          Imgproc.rectangle(input, new Point(l, t), new Point(right, b), new Scalar(255, 0, 0));
+          VisionObject obj = new VisionObject(l, right, b, t);
+          obj.angle =
+              (int)
+                  Math.toDegrees(
+                      Math.atan2((rowNum - obj.centerY) + rowNum, (colNum - obj.centerX) + colNum));
+          objs.add(obj);
         }
-
-        telemetry.addLine(String.valueOf(objs.get(3).centerX));
-        telemetry.update();
-        return input; // now just loop around the pixel bounding pixels and search for the most amount of non-black pixels.
+      }
     }
 
-    private static void floodfill(int r, int c, int color) {
-        if (
-                (r < 0 || r >= rowNum || c < 0 || c >= colNum)  // if out of bounds
-                        || grid.get(r,c)[0] != color  // wrong color
-                        || visited[r][c]  // already visited this square
-        ) return;
+    telemetry.addLine(String.valueOf(objs.get(3).centerX));
+    telemetry.update();
+    return input; // now just loop around the pixel bounding pixels and search for the most amount
+                  // of non-black pixels.
+  }
 
-        Stack<Pos> frontier = new Stack<>();
-        frontier.push(new Pos(r, c));
-        while(!frontier.isEmpty()){
-            Pos curr = frontier.pop();
-            r = curr.row;
-            c = curr.col;
+  private static void floodfill(int r, int c, int color) {
+    if ((r < 0 || r >= rowNum || c < 0 || c >= colNum) // if out of bounds
+        || grid.get(r, c)[0] != color // wrong color
+        || visited[r][c] // already visited this square
+    ) return;
 
-            if (r < 0 || r >= rowNum || c < 0 || c >= colNum
-                    || grid.get(r,c)[0] != color || visited[r][c])
-                continue;
+    Stack<Pos> frontier = new Stack<>();
+    frontier.push(new Pos(r, c));
+    while (!frontier.isEmpty()) {
+      Pos curr = frontier.pop();
+      r = curr.row;
+      c = curr.col;
 
-            t = Math.min(t, r); b = Math.max(b, r);
-            right = Math.max(right, c); l = Math.min(l, c);
+      if (r < 0
+          || r >= rowNum
+          || c < 0
+          || c >= colNum
+          || grid.get(r, c)[0] != color
+          || visited[r][c]) continue;
 
-            visited[r][c] = true;
-            for (int i = 0; i < 4; i++) {
-                frontier.add(new Pos(r + R_CHANGE[i], c + C_CHANGE[i]));
-            }
-        }
+      t = Math.min(t, r);
+      b = Math.max(b, r);
+      right = Math.max(right, c);
+      l = Math.min(l, c);
+
+      visited[r][c] = true;
+      for (int i = 0; i < 4; i++) {
+        frontier.add(new Pos(r + R_CHANGE[i], c + C_CHANGE[i]));
+      }
     }
+  }
 }
 
 class Pos {
-    int row;
-    int col;
-    public Pos(int row, int col) {
-        this.row = row;
-        this.col = col;
-    }
+  int row;
+  int col;
+
+  public Pos(int row, int col) {
+    this.row = row;
+    this.col = col;
+  }
 }
