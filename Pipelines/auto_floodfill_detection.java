@@ -39,8 +39,13 @@ public class auto_floodfill_detection extends OpenCvPipeline {
     saveImg = false;
   }
 
-  public auto_floodfill_detection() {saveImg=false;}
-  public auto_floodfill_detection(boolean save) {saveImg=save;}
+  public auto_floodfill_detection() {
+    saveImg = false;
+  }
+
+  public auto_floodfill_detection(boolean save) {
+    saveImg = save;
+  }
 
   @Override
   public Mat processFrame(Mat input) {
@@ -73,7 +78,7 @@ public class auto_floodfill_detection extends OpenCvPipeline {
       }
     }
 
-    if(saveImg){
+    if (saveImg) {
       saveImg = false;
       saveMatToDisk(input, "auto_rect_img");
     }
@@ -115,4 +120,3 @@ public class auto_floodfill_detection extends OpenCvPipeline {
     }
   }
 }
-
