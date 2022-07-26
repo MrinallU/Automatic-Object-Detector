@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.WebCam;
+package org.firstinspires.ftc.teamcode.WebCam.Pipelines.Helpers;
 
 public class VisionObject {
-  int left, right, top, bottom, centerX, centerY, angle;
+  public int left, right, top, bottom, centerX, centerY, angle;
 
   public VisionObject(int l, int r, int b, int t) {
     left = l;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.WebCam;
+package org.firstinspires.ftc.teamcode.WebCam.Pipelines;
 
 import org.opencv.core.Point;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -15,6 +15,7 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
   public Scalar lower = new Scalar(0, 0, 0);
   public Scalar upper = new Scalar(255, 255, 255);
 
+  private boolean saveImg=false;
   private Mat hsvMat = new Mat();
   private Mat binaryMat = new Mat();
   private Mat maskedInputMat = new Mat();
@@ -22,10 +23,11 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
   private Point topLeft1 = new Point(10, 0), bottomRight1 = new Point(40, 20);
 
   public rectangle_thresholder_pipeline(Telemetry telemetry) {
-    this.telemetry = telemetry;
+    this.telemetry = telemetry; saveImg=false;
   }
 
-  public rectangle_thresholder_pipeline() {}
+  public rectangle_thresholder_pipeline() {saveImg=false;}
+  public rectangle_thresholder_pipeline(boolean s) {saveImg=s;}
 
   @Override
   public Mat processFrame(Mat input) {
@@ -56,8 +58,13 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
     }
 
     telemetry.update();
-    return binaryMat; // now just loop around the pixel bounding pixels and search for the most
-                      // amount of non-black pixels.
+
+    if(saveImg) {
+      saveMatToDisk(input, "rect_manual_img");
+      saveImg=false;
+    }
+
+    return binaryMat;
   }
 
   public String getOut() {

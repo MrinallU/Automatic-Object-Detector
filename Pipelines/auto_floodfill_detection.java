@@ -1,6 +1,8 @@
-package org.firstinspires.ftc.teamcode.WebCam;
+package org.firstinspires.ftc.teamcode.WebCam.Pipelines;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.WebCam.Pipelines.Helpers.Pos;
+import org.firstinspires.ftc.teamcode.WebCam.Pipelines.Helpers.VisionObject;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -16,10 +18,11 @@ public class auto_floodfill_detection extends OpenCvPipeline {
   Telemetry telemetry;
   public Scalar lower = new Scalar(0, 0, 0);
   public Scalar upper = new Scalar(255, 255, 255);
-
+  public Mat img;
   private Mat hsvMat = new Mat();
   private Mat binaryMat = new Mat();
   private Mat maskedInputMat = new Mat();
+  private boolean saveImg = false;
 
   private ArrayList<VisionObject> objs;
   private static Mat grid; // the grid itself
@@ -33,9 +36,11 @@ public class auto_floodfill_detection extends OpenCvPipeline {
 
   public auto_floodfill_detection(Telemetry telemetry) {
     this.telemetry = telemetry;
+    saveImg = false;
   }
 
-  public auto_floodfill_detection() {}
+  public auto_floodfill_detection() {saveImg=false;}
+  public auto_floodfill_detection(boolean save) {saveImg=save;}
 
   @Override
   public Mat processFrame(Mat input) {
@@ -44,6 +49,7 @@ public class auto_floodfill_detection extends OpenCvPipeline {
     maskedInputMat.release();
     Core.bitwise_and(input, input, maskedInputMat, binaryMat);
     grid = binaryMat;
+
     objs = new ArrayList<>();
     rowNum = (int) input.size().height;
     colNum = (int) input.size().width;
@@ -62,19 +68,19 @@ public class auto_floodfill_detection extends OpenCvPipeline {
           floodfill(i, j, 255);
           Imgproc.rectangle(input, new Point(l, t), new Point(right, b), new Scalar(255, 0, 0));
           VisionObject obj = new VisionObject(l, right, b, t);
-          obj.angle =
-              (int)
-                  Math.toDegrees(
-                      Math.atan2((rowNum - obj.centerY) + rowNum, (colNum - obj.centerX) + colNum));
           objs.add(obj);
         }
       }
     }
 
+    if(saveImg){
+      saveImg = false;
+      saveMatToDisk(input, "auto_rect_img");
+    }
+
     telemetry.addLine(String.valueOf(objs.get(3).centerX));
     telemetry.update();
-    return input; // now just loop around the pixel bounding pixels and search for the most amount
-                  // of non-black pixels.
+    return input;
   }
 
   private static void floodfill(int r, int c, int color) {
@@ -110,12 +116,3 @@ public class auto_floodfill_detection extends OpenCvPipeline {
   }
 }
 
-class Pos {
-  int row;
-  int col;
-
-  public Pos(int row, int col) {
-    this.row = row;
-    this.col = col;
-  }
-}
