@@ -16,11 +16,14 @@ public class Test_teleop extends LinearOpMode {
     camera.switchToFFPipleine();
     telemetry.addLine("Status: Initialized");
     waitForStart();
-    ArrayList<VisionObject> objects = camera.getObjects();
-    if (objects.size() > 0) {
-      VisionObject o = objects.get(0);
-      telemetry.addLine("Pixel coords (x,y) " + o.centerX + " " + o.centerY);
-      telemetry.addLine("Inch coords (x,y) " + o.inchX + " " + o.inchY);
+
+    while(opModeIsActive()){
+      ArrayList<VisionObject> objects = camera.getObjects();
+      if (objects.size() > 0) {
+        VisionObject o = objects.get(0);
+        telemetry.addLine("Pixel coords (x,y) " + o.centerX + " " + o.centerY);
+        telemetry.addLine("Inch coords (x,y) " + o.inchX + " " + o.inchY);
+      }
     }
   }
 }
