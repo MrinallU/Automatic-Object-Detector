@@ -53,33 +53,17 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
     }
 
     if (w1 > w2) {
-      telemetry.addLine("rect#1");
       out = "1";
     } else if (w1 < w2) {
-      telemetry.addLine("rect#2");
       out = "2";
     } else {
-      telemetry.addLine("BOTH");
       out = "3";
     }
 
-    telemetry.update();
-
-<<<<<<< HEAD
-<<<<<<< HEAD
     if(saveImg) {
       //saveMatToDisk(input, "rect_manual_img");
       saveImg=false;
-=======
-    if (saveImg) {
       saveMatToDisk(input, "rect_manual_img");
-      saveImg = false;
->>>>>>> e50fccbee1963e1371b7f152ac5a5b2659d9da9e
-=======
-    if (saveImg) {
-      // saveMatToDisk(input, "rect_manual_img");
-      saveImg = false;
->>>>>>> 158ae74d2dbb3f3a362e380334adf8f6d702deb7
     }
 
     return binaryMat;
