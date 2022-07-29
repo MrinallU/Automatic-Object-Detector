@@ -82,7 +82,7 @@ public class auto_floodfill_detection extends OpenCvPipeline {
 
     if (saveImg) {
       saveImg = false;
-      //saveMatToDisk(input, "auto_rect_img");
+      // saveMatToDisk(input, "auto_rect_img");
     }
 
     telemetry.addLine(String.valueOf(objs.get(0).centerX));

@@ -45,14 +45,17 @@
 
             }
         });
-    }
+  }
 
-    public void switchToFFPipleine(){
-        webcam.setPipeline(p2);
-    }
+  public void switchToFFPipleine() {
+    webcam.setPipeline(p2);
+  }
 
-    public ArrayList<VisionObject> getObjects(){ return p2.objs; }
-    public void stop(){
-        webcam.stopStreaming();
-    }
- }
+  public ArrayList<VisionObject> getObjects() {
+    return p2.objs;
+  }
+
+  public void stop() {
+    webcam.stopStreaming();
+  }
+}

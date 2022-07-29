@@ -66,6 +66,7 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
     telemetry.update();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     if(saveImg) {
       //saveMatToDisk(input, "rect_manual_img");
       saveImg=false;
@@ -74,6 +75,11 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
       saveMatToDisk(input, "rect_manual_img");
       saveImg = false;
 >>>>>>> e50fccbee1963e1371b7f152ac5a5b2659d9da9e
+=======
+    if (saveImg) {
+      // saveMatToDisk(input, "rect_manual_img");
+      saveImg = false;
+>>>>>>> 158ae74d2dbb3f3a362e380334adf8f6d702deb7
     }
 
     return binaryMat;
