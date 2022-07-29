@@ -60,9 +60,9 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
       out = "3";
     }
 
-    if(saveImg) {
-      //saveMatToDisk(input, "rect_manual_img");
-      saveImg=false;
+    if (saveImg) {
+      // saveMatToDisk(input, "rect_manual_img");
+      saveImg = false;
       saveMatToDisk(input, "rect_manual_img");
     }
 
