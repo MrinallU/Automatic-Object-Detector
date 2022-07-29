@@ -4,12 +4,15 @@
  import com.qualcomm.robotcore.hardware.HardwareMap;
 
  import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+ import org.firstinspires.ftc.teamcode.WebCam.Pipelines.Helpers.VisionObject;
  import org.firstinspires.ftc.teamcode.WebCam.Pipelines.auto_floodfill_detection;
  import org.firstinspires.ftc.teamcode.WebCam.Pipelines.rectangle_thresholder_pipeline;
  import org.openftc.easyopencv.OpenCvCamera;
  import org.openftc.easyopencv.OpenCvCameraFactory;
  import org.openftc.easyopencv.OpenCvCameraRotation;
  import org.openftc.easyopencv.OpenCvWebcam;
+
+ import java.util.ArrayList;
 
  @TeleOp
  public class Camera {
@@ -48,6 +51,7 @@
         webcam.setPipeline(p2);
     }
 
+    public ArrayList<VisionObject> getObjects(){ return p2.objs; }
     public void stop(){
         webcam.stopStreaming();
     }

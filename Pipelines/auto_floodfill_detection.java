@@ -16,7 +16,7 @@ import java.util.Stack;
 // todo Linear regression for distance based on cluster size + linear regression for angle
 public class auto_floodfill_detection extends OpenCvPipeline {
   Telemetry telemetry;
-  public Scalar lower = new Scalar(0, 0, 0);
+  public Scalar lower = new Scalar(0, 109, 0);
   public Scalar upper = new Scalar(255, 255, 255);
   public Mat img;
   private Mat hsvMat = new Mat();
@@ -24,7 +24,7 @@ public class auto_floodfill_detection extends OpenCvPipeline {
   private Mat maskedInputMat = new Mat();
   private boolean saveImg = false;
 
-  private ArrayList<VisionObject> objs;
+  public ArrayList<VisionObject> objs;
   private static Mat grid; // the grid itself
   private static int rowNum;
   private static int colNum; // grid dimensions, rows and columns
@@ -44,6 +44,7 @@ public class auto_floodfill_detection extends OpenCvPipeline {
 
   @Override
   public Mat processFrame(Mat input) {
+    objs.clear();
     Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
     Core.inRange(hsvMat, lower, upper, binaryMat);
     maskedInputMat.release();
@@ -75,10 +76,10 @@ public class auto_floodfill_detection extends OpenCvPipeline {
 
     if(saveImg){
       saveImg = false;
-      saveMatToDisk(input, "auto_rect_img");
+      //saveMatToDisk(input, "auto_rect_img");
     }
 
-    telemetry.addLine(String.valueOf(objs.get(3).centerX));
+    telemetry.addLine(String.valueOf(objs.get(0).centerX));
     telemetry.update();
     return input;
   }
