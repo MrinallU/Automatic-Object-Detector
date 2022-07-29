@@ -85,7 +85,6 @@ public class auto_floodfill_detection extends OpenCvPipeline {
       saveMatToDisk(input, "floodfill_img");
     }
 
-
     return input;
   }
 
