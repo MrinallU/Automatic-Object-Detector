@@ -17,7 +17,7 @@ public class Test_teleop extends LinearOpMode {
     telemetry.addLine("Status: Initialized");
     waitForStart();
 
-    while(opModeIsActive()){
+    while (opModeIsActive()) {
       ArrayList<VisionObject> objects = camera.getObjects();
       if (objects.size() > 0) {
         VisionObject o = objects.get(0);
