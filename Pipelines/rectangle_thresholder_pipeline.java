@@ -15,7 +15,7 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
   public Scalar lower = new Scalar(0, 0, 0);
   public Scalar upper = new Scalar(255, 255, 255);
 
-  private boolean saveImg=false;
+  private boolean saveImg = false;
   private Mat hsvMat = new Mat();
   private Mat binaryMat = new Mat();
   private Mat maskedInputMat = new Mat();
@@ -23,11 +23,17 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
   private Point topLeft1 = new Point(10, 0), bottomRight1 = new Point(40, 20);
 
   public rectangle_thresholder_pipeline(Telemetry telemetry) {
-    this.telemetry = telemetry; saveImg=false;
+    this.telemetry = telemetry;
+    saveImg = false;
   }
 
-  public rectangle_thresholder_pipeline() {saveImg=false;}
-  public rectangle_thresholder_pipeline(boolean s) {saveImg=s;}
+  public rectangle_thresholder_pipeline() {
+    saveImg = false;
+  }
+
+  public rectangle_thresholder_pipeline(boolean s) {
+    saveImg = s;
+  }
 
   @Override
   public Mat processFrame(Mat input) {
@@ -59,9 +65,15 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
 
     telemetry.update();
 
+<<<<<<< HEAD
     if(saveImg) {
       //saveMatToDisk(input, "rect_manual_img");
       saveImg=false;
+=======
+    if (saveImg) {
+      saveMatToDisk(input, "rect_manual_img");
+      saveImg = false;
+>>>>>>> e50fccbee1963e1371b7f152ac5a5b2659d9da9e
     }
 
     return binaryMat;
